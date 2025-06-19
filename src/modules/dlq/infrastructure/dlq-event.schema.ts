@@ -1,15 +1,20 @@
 import { Schema, Document } from 'mongoose';
 
 export interface DlqEvent extends Document {
+  id: string;
   eventName: string;
-  payload: any;
-  createdAt: Date;
-  retryCount: number;
+  payload: Record<string, any>;
+  timestamp?: number;
 }
 
 export const DlqEventSchema = new Schema({
   eventName: { type: String, required: true },
   payload: { type: Schema.Types.Mixed, required: true },
-  createdAt: { type: Date, default: Date.now },
-  retryCount: { type: Number, default: 0 },
+  timestamp: { type: Number, default: () => Date.now() },
 });
+
+// Virtual for id compatibility
+DlqEventSchema.virtual('id').get(function (this: any) {
+  return this._id.toHexString();
+});
+DlqEventSchema.set('toJSON', { virtuals: true });

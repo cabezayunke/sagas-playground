@@ -4,6 +4,9 @@ import { OrderService } from '../../orders/application/order.service';
 import { DomainEvent, OrderConfirmedEvent } from '../../../core/events/events';
 import { SlackNotificationService } from '../../notifications/infrastructure/slack-notification.service';
 import { DlqService } from '../../dlq/domain/dlq.service';
+import { DlqEventMessageDto } from '../domain/dlq-event-message.dto';
+import { validateSync } from 'class-validator';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class DlqProcessorService {
@@ -18,7 +21,7 @@ export class DlqProcessorService {
   @Cron(CronExpression.EVERY_MINUTE)
   async processDlq(): Promise<void> {
     this.logger.log('Starting DLQ processing...');
-    const failedEvents: DomainEvent[] = await this.dlqService.getEvents();
+    const failedEvents: DlqEventMessageDto[] = await this.dlqService.getEvents();
 
     if (!failedEvents || failedEvents.length === 0) {
       this.logger.log('No events in DLQ.');
@@ -26,6 +29,13 @@ export class DlqProcessorService {
     }
 
     for (const event of failedEvents) {
+      // Validate the event message
+      const dto = plainToInstance(DlqEventMessageDto, event);
+      const errors = validateSync(dto);
+      if (errors.length > 0) {
+        this.logger.error('Invalid DLQ event message (skipped)', JSON.stringify(errors));
+        continue;
+      }
       this.logger.log(`Reprocessing event ${event.eventName} for Order ID ${event.payload.orderId}`);
       try {
         if (event.eventName === 'OrderConfirmed') {

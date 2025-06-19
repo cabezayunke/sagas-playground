@@ -2,16 +2,28 @@ import { Injectable } from '@nestjs/common';
 
 import { DlqService } from '../domain/dlq.service';
 
-@Injectable()
-export class InMemoryDlqService implements DlqService<any> {
-  private events: any[] = [];
 
-  async send(message: any): Promise<void> {
-    this.events.push(message);
-    console.warn('[DLQ] Event sent to DLQ:', message.eventName, message.payload);
+import { DlqEventMessageDto } from '../domain/dlq-event-message.dto';
+import { validateSync } from 'class-validator';
+import { plainToInstance } from 'class-transformer';
+
+@Injectable()
+export class InMemoryDlqService implements DlqService<DlqEventMessageDto> {
+  private events: DlqEventMessageDto[] = [];
+
+  async send(message: DlqEventMessageDto): Promise<void> {
+    // Validate before storing
+    const dto = plainToInstance(DlqEventMessageDto, message);
+    const errors = validateSync(dto);
+    if (errors.length > 0) {
+      console.error('[DLQ] Invalid event message (not stored):', JSON.stringify(errors));
+      throw new Error('Invalid DLQ event message');
+    }
+    this.events.push(dto);
+    console.warn('[DLQ] Event sent to DLQ:', dto.eventName, dto.payload);
   }
 
-  async getEvents(): Promise<any[]> {
+  async getEvents(): Promise<DlqEventMessageDto[]> {
     return this.events;
   }
 

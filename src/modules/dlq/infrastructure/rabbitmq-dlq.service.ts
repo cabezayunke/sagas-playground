@@ -1,11 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ClientProxy, ClientProxyFactory } from '@nestjs/microservices';
 import { rabbitMQOptions } from '../../../rabbitmq.options';
-
 import { DlqService } from '../domain/dlq.service';
+import { DlqEventMessageDto } from '../domain/dlq-event-message.dto';
+import { validateSync } from 'class-validator';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
-export class RabbitMqDlqService implements DlqService<any> {
+export class RabbitMqDlqService implements DlqService<DlqEventMessageDto> {
   private client: ClientProxy;
   private readonly logger = new Logger(RabbitMqDlqService.name);
 
@@ -19,7 +21,14 @@ export class RabbitMqDlqService implements DlqService<any> {
     });
   }
 
-  async send(message: any): Promise<void> {
+  async send(message: DlqEventMessageDto): Promise<void> {
+    // Optionally validate before sending
+    const dto = plainToInstance(DlqEventMessageDto, message);
+    const errors = validateSync(dto);
+    if (errors.length > 0) {
+      this.logger.error('Invalid DLQ event message (not sent)', JSON.stringify(errors));
+      throw new Error('Invalid DLQ event message');
+    }
     try {
       await this.client.emit<any>('dlq_event', message).toPromise();
       this.logger.log(`Published event to DLQ: ${JSON.stringify(message)}`);
