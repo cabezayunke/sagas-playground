@@ -7,7 +7,7 @@ describe('OrderService', () => {
 
   beforeEach(() => {
     dlqService = { add: jest.fn() } as any;
-    orderService = new OrderService(dlqService, {} as any);
+    orderService = new OrderService({} as any);
     // For test, add any necessary stubs/mocks
     (orderService as any).eventBus = { publish: jest.fn() };
   });
@@ -19,19 +19,19 @@ describe('OrderService', () => {
     expect((orderService as any).orders.get('order-1')).toBe(order);
   });
 
-  it('should confirm an order', () => {
-    orderService.createOrder('order-2', []);
-    orderService.confirmOrder('order-2');
+  it('should confirm an order', async () => {
+    await orderService.createOrder('order-2', []);
+    await orderService.confirmOrder('order-2');
     expect((orderService as any).orders.get('order-2').status).toBe('CONFIRMED');
   });
 
-  it('should cancel an order', () => {
+  it('should cancel an order', async () => {
     orderService.createOrder('order-3', []);
-    orderService.cancelOrder('order-3', 'test');
+    await orderService.cancelOrder('order-3', 'test');
     expect((orderService as any).orders.get('order-3').status).toBe('CANCELLED');
   });
 
   it('should throw if order not found', () => {
-    expect(() => orderService.confirmOrder('missing')).toThrow('Order missing not found.');
+    expect(() => orderService.confirmOrder('missing')).rejects.toThrow('Order missing not found.');
   });
 });

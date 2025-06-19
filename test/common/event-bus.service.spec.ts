@@ -1,4 +1,5 @@
-import { EventBusService } from '../../src/common/event-bus.service';
+import { EventBusService } from "../../src/core/event-bus.service";
+
 
 describe('EventBusService', () => {
   it('should publish and subscribe events', () => {

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DomainEvent } from '../core/events/events';
+import { DomainEvent } from './events/events';
 
 type EventHandler = (event: DomainEvent) => void;
 

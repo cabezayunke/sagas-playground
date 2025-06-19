@@ -4,19 +4,18 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { OrderController } from './modules/orders/application/order.controller';
-import { OrderService } from './modules/orders/application/order.service';
-import { InventoryService } from './modules/inventory/application/inventory.service';
-import { EventBusService } from './common/event-bus.service';
-import { SagaOrchestrator } from './core/saga-orchestrator.service';
-import { OrderSaga } from './modules/orders/application/order-saga';
-import { InMemoryDlqService } from './modules/dlq/infrastructure/in-memory-dlq.service';
-import { RabbitMqDlqService } from './modules/dlq/infrastructure/rabbitmq-dlq.service';
-import { MongoDlqService } from './modules/dlq/infrastructure/mongo-dlq.service';
-import { SlackNotificationService } from './modules/notifications/infrastructure/slack-notification.service';
-import { DlqProcessorService } from './modules/dlq/infrastructure/dlq-processor.service';
+import { OrdersModule } from './modules/orders/orders.module';
+
+import { InventoryModule } from './modules/inventory/inventory.module';
+import { DlqModule } from './modules/dlq/dlq.module';
 import { DlqService } from './modules/dlq/domain/dlq.service';
 import { DlqEventSchema } from './modules/dlq/infrastructure/dlq-event.schema';
+import { OrderController } from './modules/orders/application/order.controller';
+
+import { InMemoryDlqService } from './modules/dlq/infrastructure/in-memory-dlq.service';
+import { MongoDlqService } from './modules/dlq/infrastructure/mongo-dlq.service';
+import { RabbitMqDlqService } from './modules/dlq/infrastructure/rabbitmq-dlq.service';
+
 
 @Module({
   imports: [
@@ -28,21 +27,13 @@ import { DlqEventSchema } from './modules/dlq/infrastructure/dlq-event.schema';
         uri: configService.get<string>('MONGODB_URI'),
       }),
     }),
-    MongooseModule.forFeature([{ name: 'DlqEvent', schema: DlqEventSchema }]),
     ScheduleModule.forRoot(),
+    DlqModule,
+    InventoryModule,
+    OrdersModule,
   ],
   controllers: [OrderController],
   providers: [
-    OrderService,
-    InventoryService,
-    EventBusService,
-    SagaOrchestrator,
-    OrderSaga,
-    InMemoryDlqService,
-    RabbitMqDlqService,
-    MongoDlqService,
-    SlackNotificationService,
-    DlqProcessorService,
     // Dynamic DLQ provider
     {
       provide: DlqService,
@@ -56,13 +47,4 @@ import { DlqEventSchema } from './modules/dlq/infrastructure/dlq-event.schema';
     },
   ],
 })
-export class AppModule implements OnModuleInit {
-  constructor(
-    private readonly sagaOrchestrator: SagaOrchestrator,
-    private readonly orderSaga: OrderSaga,
-  ) { }
-
-  onModuleInit() {
-    this.sagaOrchestrator.registerSaga(this.orderSaga);
-  }
-}
+export class AppModule { }
