@@ -17,6 +17,7 @@ import { InMemoryDlqService } from './modules/dlq/infrastructure/in-memory-dlq.s
 import { MongoDlqService } from './modules/dlq/infrastructure/mongo-dlq.service';
 import { RabbitMqDlqService } from './modules/dlq/infrastructure/rabbitmq-dlq.service';
 
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { RabbitMqDlqService } from './modules/dlq/infrastructure/rabbitmq-dlq.se
       }),
     }),
     ScheduleModule.forRoot(),
+    EventEmitterModule.forRoot(),
     NotificationsModule,
     DlqModule,
     InventoryModule,

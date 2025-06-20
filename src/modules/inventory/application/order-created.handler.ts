@@ -14,6 +14,8 @@ export class OrderCreatedHandler {
   @OnEvent('OrderCreated')
   async onOrderCreated(event: OrderCreatedEvent) {
     const { orderId, items } = event.payload;
+    console.log(`[OrderCreatedHandler] Handling OrderCreated event for order ${orderId}`);
+
     try {
       const reserved = await this.inventoryService.reserveInventory(items);
       if (reserved) {

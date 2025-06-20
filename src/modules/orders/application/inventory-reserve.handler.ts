@@ -54,6 +54,7 @@ export class InventoryReserveHandler {
     @OnEvent('InventoryReservedEvent')
     async onInventoryReserved(event: InventoryReservedEvent): Promise<void> {
         const { orderId } = event.payload;
+        console.log(`[InventoryReserveHandler] Handling InventoryReserved event for order ${orderId}`);
 
         try {
             await retry<void>(async () => {
@@ -72,6 +73,7 @@ export class InventoryReserveHandler {
     @OnEvent('InventoryReservationFailedEvent')
     async onInventoryReservationFailed(event: InventoryReservationFailedEvent): Promise<void> {
         const { orderId } = event.payload;
+        console.log(`[InventoryReserveHandler] Handling InventoryReservationFailed event for order ${orderId}`);
 
         try {
             await retry<void>(async () => {
