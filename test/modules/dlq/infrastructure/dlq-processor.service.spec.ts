@@ -25,7 +25,9 @@ describe('DlqProcessorService', () => {
         mockDlqService.getEvents.mockResolvedValue([]);
         const logSpy = jest.spyOn(console, 'log');
         await service.processDlq();
-        expect(logSpy).toHaveBeenCalledWith('No events in DLQ.');
+        expect(logSpy).toHaveBeenCalledTimes(2);
+        expect(logSpy).toHaveBeenNthCalledWith(1, '[DlqProcessorService] Starting DLQ processing...');
+        expect(logSpy).toHaveBeenNthCalledWith(2, '[DlqProcessorService] No events in DLQ.');
         expect(mockSlackService.sendNotification).not.toHaveBeenCalled();
         expect(mockEventBus.publish).not.toHaveBeenCalled();
     });

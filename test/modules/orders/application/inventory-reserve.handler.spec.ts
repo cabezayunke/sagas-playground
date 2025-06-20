@@ -2,6 +2,7 @@ import { InventoryReserveHandler } from '../../../../src/modules/orders/applicat
 import { OrderService } from '../../../../src/modules/orders/application/order.service';
 import { DlqService } from '../../../../src/modules/dlq/domain/dlq.service';
 import { InventoryReservedEvent, InventoryReservationFailedEvent } from '../../../../src/modules/core/events/events';
+import { ConfigService } from '@nestjs/config';
 
 describe('InventoryReserveHandler', () => {
     let handler: InventoryReserveHandler;
@@ -11,7 +12,7 @@ describe('InventoryReserveHandler', () => {
     beforeEach(() => {
         orderService = { confirmOrder: jest.fn(), cancelOrder: jest.fn() } as any;
         dlqService = { send: jest.fn() } as any;
-        handler = new InventoryReserveHandler(orderService, dlqService);
+        handler = new InventoryReserveHandler(orderService, dlqService, new ConfigService());
     });
 
     it('should confirm order on InventoryReservedEvent', async () => {
