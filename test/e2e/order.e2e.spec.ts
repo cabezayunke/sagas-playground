@@ -1,20 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
-import { AppModule } from '../../src/app.module';
-import { DlqService } from '../../src/modules/dlq/domain/dlq.service';
-import { InMemoryDlqService } from '../../src/modules/dlq/infrastructure/in-memory-dlq.service';
+import { OrderE2ETestModule } from './order.e2e-test.module';
 
 describe('OrderController (e2e)', () => {
     let app: INestApplication;
 
     beforeAll(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
-            imports: [AppModule],
-        })
-            .overrideProvider(DlqService)
-            .useClass(InMemoryDlqService)
-            .compile();
+            imports: [OrderE2ETestModule],
+        }).compile();
 
         app = moduleFixture.createNestApplication();
         app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
@@ -49,7 +44,7 @@ describe('OrderController (e2e)', () => {
             .post('/orders')
             .send(payload)
             .expect(400);
-        expect(response.body.message).toContain('orderId');
+        expect(response.body.message[0]).toContain('orderId');
     });
 
     it('should fail with 400 if items array is empty', async () => {
@@ -61,7 +56,7 @@ describe('OrderController (e2e)', () => {
             .post('/orders')
             .send(payload)
             .expect(400);
-        expect(response.body.message).toContain('items');
+        expect(response.body.message[0]).toContain('items');
     });
 
     it('should fail with 400 if items is not an array', async () => {
@@ -73,6 +68,6 @@ describe('OrderController (e2e)', () => {
             .post('/orders')
             .send(payload)
             .expect(400);
-        expect(response.body.message).toContain('items');
+        expect(response.body.message[0]).toContain('items');
     });
 });

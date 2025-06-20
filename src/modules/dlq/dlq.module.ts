@@ -6,9 +6,10 @@ import { MongoDlqService } from './infrastructure/mongo-dlq.service';
 import { DlqProcessorService } from './infrastructure/dlq-processor.service';
 import { DlqEventSchema } from './infrastructure/dlq-event.schema';
 import { MongooseModule } from '@nestjs/mongoose';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
-    imports: [MongooseModule.forFeature([{ name: 'DlqEvent', schema: DlqEventSchema }])],
+    imports: [MongooseModule.forFeature([{ name: 'DlqEvent', schema: DlqEventSchema }]), NotificationsModule],
     providers: [
         { provide: DlqService, useClass: InMemoryDlqService },
         InMemoryDlqService,
