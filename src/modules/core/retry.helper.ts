@@ -2,7 +2,8 @@ export async function retry<T>(
   fn: () => Promise<T>,
   retries: number,
   delay: number,
-  jitter: number
+  jitter: number,
+  logMessage?: string
 ): Promise<T> {
   let attempt = 0;
   while (attempt < retries) {
@@ -13,7 +14,7 @@ export async function retry<T>(
       const jitterValue = Math.floor(Math.random() * jitter);
       const waitTime = delay * attempt + jitterValue;
       console.error(
-        `Attempt ${attempt} failed. Retrying in ${waitTime}ms...`
+        `Attempt ${attempt} failed. Retrying in ${waitTime}ms... ${logMessage}`
       );
       await new Promise((resolve) => setTimeout(resolve, waitTime));
     }

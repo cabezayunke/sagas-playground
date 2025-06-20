@@ -34,13 +34,6 @@ export class InventoryReserveHandler {
 
 
     private async updateOrderStatus(orderId: string, status: OrderStatus, reason?: string): Promise<void> {
-        // force random errors
-        // CAREFUL: this is unpredictable and breaks tests
-
-        if (Math.random() < this.configService.get<number>('CIRCUIT_BREAKER_FAILURE_RATE', 0)) {
-            throw new Error(`Random failure when updating order ${orderId}`);
-        }
-
         switch (status) {
             case 'CONFIRMED':
                 await this.orderService.confirmOrder(orderId);
@@ -62,10 +55,10 @@ export class InventoryReserveHandler {
         try {
             await retry<void>(async () => {
                 await this.updateBreaker.fire(orderId, 'CONFIRMED', undefined);
-            }, 3, 100, 50);
+            }, 3, 100, 50, `Updating order ${orderId} to CONFIRMED`);
         } catch (error) {
             console.error(
-                `[Orders:InventoryReserveHandler] Failed to update order ${orderId} to CONFIRMED after retries: ${(error as Error)?.message ?? 'Unknown error'}`
+                `[Orders:InventoryReserveHandler] Failed to update order ${orderId} to CONFIRMED after 3 retries: ${(error as Error)?.message ?? 'Unknown error'}... sending to DLQ`
             );
             await this.deadLetterQueueService.send(event);
         }
@@ -81,10 +74,10 @@ export class InventoryReserveHandler {
         try {
             await retry<void>(async () => {
                 await this.updateBreaker.fire(orderId, 'CANCELLED', event.payload?.reason as string ?? 'InventoryReservationFailed');
-            }, 3, 100, 50);
+            }, 3, 100, 50, `Updating order ${orderId} to CANCELLED`);
         } catch (error) {
             console.error(
-                `[Orders:InventoryReserveHandler] Failed to update order ${orderId} to CANCELLED after 3 retries: ${(error as Error)?.message ?? 'Unknown error'}.. sending to DLQ`
+                `[Orders:InventoryReserveHandler] Failed to update order ${orderId} to CANCELLED after 3 retries: ${(error as Error)?.message ?? 'Unknown error'}... sending to DLQ`
             );
             await this.deadLetterQueueService.send(event);
         }

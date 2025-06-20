@@ -19,7 +19,7 @@ export class DlqProcessorService {
 
 
 
-  @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(CronExpression.EVERY_10_SECONDS)
   async processDlq(): Promise<void> {
     console.log('[DlqProcessorService] Starting DLQ processing...');
     const failedEvents: DlqEventMessageDto[] = await this.dlqService.getEvents();

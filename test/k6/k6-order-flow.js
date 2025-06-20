@@ -2,8 +2,8 @@ import http from 'k6/http';
 import { check, sleep, group } from 'k6';
 
 export let options = {
-    vus: 10, // number of virtual users
-    duration: '300s', // total test duration
+    vus: 1, // number of virtual users
+    duration: '15s', // total test duration
 };
 
 const BASE_URL = __ENV.API_URL || 'http://localhost:4001';

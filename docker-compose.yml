@@ -23,7 +23,7 @@ services:
       - "4002:3000"
     environment:
       - NODE_ENV=production
-      - CIRCUIT_BREAKER_FAILURE_RATE=0.7
+      - CIRCUIT_BREAKER_FAILURE_RATE=0.5
       - MONGODB_URI=mongodb://mongoadmin:secret@mongo:27017/your-db-name?authSource=admin
       - RABBITMQ_URL=amqp://rabbitmq:5672
       - DLQ_BACKEND=rabbitmq
