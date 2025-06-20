@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import Opossum from 'opossum';
-import { OrderCancelledEvent, OrderConfirmedEvent, OrderCreatedEvent } from '../../../core/events/events';
-import { retry } from '../../../core/retry.helper';
+import { OrderCancelledEvent, OrderConfirmedEvent, OrderCreatedEvent } from '../../core/events/events';
+import { retry } from '../../core/retry.helper';
 import { DlqService } from '../../dlq/domain/dlq.service';
 import { Order, OrderStatus } from '../domain/order.entity';
-import { EventBusService } from '../../../core/event-bus.service';
+import { EventBusService } from '../../core/event-bus.service';
 
 @Injectable()
 export class OrderService {

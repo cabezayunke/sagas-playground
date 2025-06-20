@@ -1,7 +1,7 @@
 import { InventoryReserveHandler } from '../../../../src/modules/orders/application/inventory-reserve.handler';
 import { OrderService } from '../../../../src/modules/orders/application/order.service';
 import { DlqService } from '../../../../src/modules/dlq/domain/dlq.service';
-import { InventoryReservedEvent, InventoryReservationFailedEvent } from '../../../../src/core/events/events';
+import { InventoryReservedEvent, InventoryReservationFailedEvent } from '../../../../src/modules/core/events/events';
 
 describe('InventoryReserveHandler', () => {
     let handler: InventoryReserveHandler;

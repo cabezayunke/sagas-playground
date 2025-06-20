@@ -3,7 +3,7 @@ import { DlqService } from '../../../src/modules/dlq/domain/dlq.service';
 import { InMemoryDlqService } from '../../../src/modules/dlq/infrastructure/in-memory-dlq.service';
 import { DlqProcessorService } from '../../../src/modules/dlq/infrastructure/dlq-processor.service';
 import { NotificationsModule } from '../../../src/modules/notifications/notifications.module';
-import { CoreModule } from '../../../src/core/core.module';
+import { CoreModule } from '../../../src/modules/core/core.module';
 
 @Module({
     imports: [CoreModule, NotificationsModule],

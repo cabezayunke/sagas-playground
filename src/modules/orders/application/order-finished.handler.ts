@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
-import { OrderConfirmedEvent, OrderCancelledEvent } from '../../../core/events/events';
+import { OrderConfirmedEvent, OrderCancelledEvent } from '../../core/events/events';
 import { SlackNotificationService } from '../../notifications/infrastructure/slack-notification.service';
 
 @Injectable()

@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { OrderService } from './order.service';
-import { InventoryReservedEvent, InventoryReservationFailedEvent, OrderConfirmedEvent, OrderCancelledEvent } from '../../../core/events/events';
+import { InventoryReservedEvent, InventoryReservationFailedEvent, OrderConfirmedEvent, OrderCancelledEvent } from '../../core/events/events';
 import { OnEvent } from '@nestjs/event-emitter';
 import { OrderStatus } from '../domain/order.entity';
 import Opossum from 'opossum';
 import { DlqService } from '../../dlq/domain/dlq.service';
-import { retry } from '../../../core/retry.helper';
+import { retry } from '../../core/retry.helper';
 
 @Injectable()
 export class InventoryReserveHandler {

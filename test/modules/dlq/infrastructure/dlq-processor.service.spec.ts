@@ -1,6 +1,6 @@
 import { DlqProcessorService } from '../../../../src/modules/dlq/infrastructure/dlq-processor.service';
 import { DlqEventMessageDto } from '../../../../src/modules/dlq/domain/dlq-event-message.dto';
-import { OrderConfirmedEvent, OrderCancelledEvent, OrderCreatedEvent, InventoryReservedEvent, InventoryReservationFailedEvent } from '../../../../src/core/events/events';
+import { OrderConfirmedEvent, OrderCancelledEvent, OrderCreatedEvent, InventoryReservedEvent, InventoryReservationFailedEvent } from '../../../../src/modules/core/events/events';
 
 const mockSlackService = { sendNotification: jest.fn() };
 const mockDlqService = {

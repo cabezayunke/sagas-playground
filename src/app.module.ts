@@ -23,7 +23,6 @@ import { RabbitMqDlqService } from './modules/dlq/infrastructure/rabbitmq-dlq.se
     ConfigModule.forRoot({
       isGlobal: true
     }),
-    NotificationsModule,
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -32,6 +31,7 @@ import { RabbitMqDlqService } from './modules/dlq/infrastructure/rabbitmq-dlq.se
       }),
     }),
     ScheduleModule.forRoot(),
+    NotificationsModule,
     DlqModule,
     InventoryModule,
     OrdersModule,
@@ -41,13 +41,20 @@ import { RabbitMqDlqService } from './modules/dlq/infrastructure/rabbitmq-dlq.se
     // Dynamic DLQ provider
     {
       provide: DlqService,
-      inject: [ConfigService, getModelToken('DlqEvent')],
-      useFactory: (configService: ConfigService, dlqModel: Model<any>) => {
+      inject: [ConfigService, InMemoryDlqService, MongoDlqService, RabbitMqDlqService],
+      useFactory: (
+        configService: ConfigService,
+        inMemoryDlq: InMemoryDlqService,
+        mongoDlq: MongoDlqService,
+        rabbitMqDlq: RabbitMqDlqService,
+      ) => {
         const backend = configService.get<string>('DLQ_BACKEND');
-        if (backend === 'rabbitmq') return new RabbitMqDlqService();
-        if (backend === 'mongo') return new MongoDlqService(dlqModel);
-        return new InMemoryDlqService();
-      },
+        if (backend === 'mongo') {
+          return mongoDlq;
+        }
+        if (backend === 'rabbitmq') return rabbitMqDlq;
+        return inMemoryDlq;
+      }
     },
   ],
 })

@@ -1,4 +1,4 @@
-import { retry } from "../../src/core/retry.helper";
+import { retry } from "../../src/modules/core/retry.helper";
 
 
 describe('retry', () => {

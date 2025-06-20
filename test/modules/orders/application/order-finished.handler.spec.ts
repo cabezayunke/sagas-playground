@@ -1,5 +1,5 @@
 import { OrderFinishedHandler } from '../../../../src/modules/orders/application/order-finished.handler';
-import { OrderConfirmedEvent, OrderCancelledEvent } from '../../../../src/core/events/events';
+import { OrderConfirmedEvent, OrderCancelledEvent } from '../../../../src/modules/core/events/events';
 
 describe('OrderFinishedHandler', () => {
     let handler: OrderFinishedHandler;

@@ -4,12 +4,13 @@ import { InMemoryDlqService } from './infrastructure/in-memory-dlq.service';
 import { RabbitMqDlqService } from './infrastructure/rabbitmq-dlq.service';
 import { MongoDlqService } from './infrastructure/mongo-dlq.service';
 import { DlqProcessorService } from './infrastructure/dlq-processor.service';
-import { DlqEventSchema } from './infrastructure/dlq-event.schema';
+import { DlqEvent, DlqEventSchema } from './infrastructure/dlq-event.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { CoreModule } from '../core/core.module';
 
 @Module({
-    imports: [MongooseModule.forFeature([{ name: 'DlqEvent', schema: DlqEventSchema }]), NotificationsModule],
+    imports: [CoreModule, NotificationsModule, MongooseModule.forFeature([{ name: DlqEvent.name, schema: DlqEventSchema }])],
     providers: [
         { provide: DlqService, useClass: InMemoryDlqService },
         InMemoryDlqService,

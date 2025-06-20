@@ -1,4 +1,4 @@
-import { EventBusService } from "../../src/core/event-bus.service";
+import { EventBusService } from "../../src/modules/core/event-bus.service";
 
 
 describe('EventBusService', () => {

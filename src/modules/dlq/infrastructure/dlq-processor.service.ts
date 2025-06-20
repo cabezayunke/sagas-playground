@@ -1,13 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { OrderService } from '../../orders/application/order.service';
-import { DomainEvent, InventoryReservationFailedEvent, InventoryReservedEvent, OrderCancelledEvent, OrderConfirmedEvent, OrderCreatedEvent } from '../../../core/events/events';
+import { DomainEvent, InventoryReservationFailedEvent, InventoryReservedEvent, OrderCancelledEvent, OrderConfirmedEvent, OrderCreatedEvent } from '../../core/events/events';
 import { SlackNotificationService } from '../../notifications/infrastructure/slack-notification.service';
 import { DlqService } from '../../dlq/domain/dlq.service';
 import { DlqEventMessageDto } from '../domain/dlq-event-message.dto';
 import { validateSync } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
-import { EventBusService } from '../../../core/event-bus.service';
+import { EventBusService } from '../../core/event-bus.service';
 
 @Injectable()
 export class DlqProcessorService {

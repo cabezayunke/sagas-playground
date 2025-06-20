@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { InventoryService } from '../domain/inventory.service';
-import { EventBusService } from '../../../core/event-bus.service';
-import { OrderCreatedEvent, InventoryReservedEvent, InventoryReservationFailedEvent } from '../../../core/events/events';
+import { EventBusService } from '../../core/event-bus.service';
+import { OrderCreatedEvent, InventoryReservedEvent, InventoryReservationFailedEvent } from '../../core/events/events';
 
 @Injectable()
 export class OrderCreatedHandler {

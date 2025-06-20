@@ -1,17 +1,19 @@
-import { Schema, Document } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
-export interface DlqEvent extends Document {
-  id: string;
-  eventName: string;
-  payload: Record<string, any>;
+@Schema({ toJSON: { virtuals: true } })
+export class DlqEvent extends Document {
+  @Prop({ required: true })
+  eventName!: string;
+
+  @Prop({ type: Object, required: true })
+  payload!: Record<string, any>;
+
+  @Prop({ default: () => Date.now() })
   timestamp?: number;
 }
 
-export const DlqEventSchema = new Schema({
-  eventName: { type: String, required: true },
-  payload: { type: Schema.Types.Mixed, required: true },
-  timestamp: { type: Number, default: () => Date.now() },
-});
+export const DlqEventSchema = SchemaFactory.createForClass(DlqEvent);
 
 // Virtual for id compatibility
 DlqEventSchema.virtual('id').get(function (this: any) {

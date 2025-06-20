@@ -1,19 +1,30 @@
 version: '3.8'
 
 services:
-  api:
+  api-mongo:
     build: .
-    container_name: sagas-api
+    container_name: sagas-api-mongo
     ports:
-      - "3000:3000"
+      - "4001:3000"
     environment:
       - NODE_ENV=production
-      - RABBITMQ_URL=amqp://rabbitmq:5672
       - MONGODB_URI=mongodb://mongoadmin:secret@mongo:27017/your-db-name?authSource=admin
       - DLQ_BACKEND=mongo
     depends_on:
-      - rabbitmq
       - mongo
+    restart: unless-stopped
+
+  api-rabbitmq:
+    build: .
+    container_name: sagas-api-rabbitmq
+    ports:
+      - "4002:3000"
+    environment:
+      - NODE_ENV=production
+      - RABBITMQ_URL=amqp://rabbitmq:5672
+      - DLQ_BACKEND=rabbitmq
+    depends_on:
+      - rabbitmq
     restart: unless-stopped
 
   rabbitmq:
