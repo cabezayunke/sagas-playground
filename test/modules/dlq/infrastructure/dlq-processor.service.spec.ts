@@ -23,7 +23,7 @@ describe('DlqProcessorService', () => {
 
     it('should log and do nothing if DLQ is empty', async () => {
         mockDlqService.getEvents.mockResolvedValue([]);
-        const logSpy = jest.spyOn((service as any).logger, 'log');
+        const logSpy = jest.spyOn(console, 'log');
         await service.processDlq();
         expect(logSpy).toHaveBeenCalledWith('No events in DLQ.');
         expect(mockSlackService.sendNotification).not.toHaveBeenCalled();
@@ -79,7 +79,7 @@ describe('DlqProcessorService', () => {
     it('should log error on unknown event name', async () => {
         const event = { id: '7', eventName: 'UnknownEvent', payload: { orderId: 'unk' } };
         mockDlqService.getEvents.mockResolvedValue([event]);
-        const errorSpy = jest.spyOn((service as any).logger, 'error');
+        const errorSpy = jest.spyOn(console, 'error');
         await service.processDlq();
         expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining('Unknown event name: UnknownEvent'));
         expect(mockEventBus.publish).not.toHaveBeenCalled();
@@ -91,7 +91,7 @@ describe('DlqProcessorService', () => {
         mockDlqService.getEvents.mockResolvedValue([event]);
         mockDlqService.deleteEvent.mockResolvedValue(undefined);
         mockEventBus.publish.mockImplementation(() => { throw new Error('publish fail'); });
-        const errorSpy = jest.spyOn((service as any).logger, 'error');
+        const errorSpy = jest.spyOn(console, 'error');
         await service.processDlq();
         expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining('Reprocessing failed for event OrderConfirmed: publish fail'));
         expect(mockSlackService.sendNotification).toHaveBeenCalledWith(expect.stringContaining('DLQ reprocess failure: OrderConfirmed for Order err still failing.'));

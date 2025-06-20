@@ -13,4 +13,8 @@ export class DlqEventMessageDto {
     @IsOptional()
     @IsNumber()
     timestamp?: number;
+
+    @IsOptional()
+    @IsNumber()
+    retries?: number;
 }

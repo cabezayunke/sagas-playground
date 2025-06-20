@@ -30,7 +30,8 @@
     "mongoose": "^8.0.0",
     "opossum": "^7.1.0",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.0.0"
+    "rxjs": "^7.0.0",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
